@@ -3,11 +3,12 @@ const { defineConfig } = require("cypress");
 
 module.exports = defineConfig({
   e2e: {
-    baseUrl: 'https://the-internet.herokuapp.com',
+    specPattern: "**/*.feature",
     setupNodeEvents(on, config) {
-      on('file:preprocessor', cucumber());
+      on("file:preprocessor", cucumber());
     },
-    specPattern: "cypress/e2e/*.feature",
+    baseUrl: "https://the-internet.herokuapp.com",
+    baseUrlAPI: "http://localhost:7081",
   },
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true,
