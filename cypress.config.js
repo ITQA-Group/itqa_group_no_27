@@ -7,7 +7,7 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       on("file:preprocessor", cucumber());
     },
-    baseUrl: "https://the-internet.herokuapp.com",
+    baseUrl: "https://the-internet.herokuapp.com/",
     baseUrlAPI: "http://localhost:7081",
   },
   "cypress-cucumber-preprocessor": {
