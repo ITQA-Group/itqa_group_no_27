@@ -13,7 +13,7 @@ Feature: API Testing to Update Books Data
       | id | title       | author       |
       | 1  | New Title 1 | New Author 1 |
 
-  Scenario:Updating book with missing values
+  Scenario:Updating a book with empty values
     Given user post book details with ID 1
     When the user sends following details:
       | id | title | author       |
