@@ -21,4 +21,10 @@ Feature: API Testing to Update Books Data
     Then the response status should be 400 status
     And the response body show "Mandatory parameters should not be null"
 
-
+  Scenario: Updating a book with the same title but a different author
+    Given user post book details with ID 1
+    When the user sends following details:
+      | id | title       | author       |
+      | 1  | Sample Book | New Author 2 |
+    Then the response status should be 200 status
+    And the response body show "Updated Successfully"
