@@ -37,7 +37,7 @@ console.log(response)
 });
 
 Then('the response status should be {int} status', (statusCode) => {
-    expect(response.status).to.eq(statusCode);  
+    expect(statusCode).to.eq(response.status);  
     });
 
 And('the responses should contain the updated title and author', (dataTable) => {
