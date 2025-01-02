@@ -20,7 +20,7 @@ Given('user logs in to the system with username {string} and password {string} a
 Given('the user is unauthorized', () => {
     auth={}
    });
-Given('user post book details with ID {int}', (id) => {
+Given('the user post book data along with an ID {int}', (id) => {
     const bookData = { id, title: "Sample Book", author: "Sample Author" }
     Books.addBook(bookData,auth ).then((res) => {
       response = res; // Assign the response to the global variable
@@ -28,7 +28,7 @@ Given('user post book details with ID {int}', (id) => {
   });
 
 
-  When('the user sends following details:', (dataTable) => {
+  When('the user updates the following data:', (dataTable) => {
   const bookData = dataTable.hashes()[0];
   Books.updateBook(bookData,auth).then((res) => {
     response = res; 
