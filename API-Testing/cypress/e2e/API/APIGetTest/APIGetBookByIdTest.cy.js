@@ -11,7 +11,7 @@ Given('user is logged into the service', () => {
   });
 });
 
-When('admin sends a GET request to retrieve a book with ID {int}', (bookId) => {
+When('user sends a GET request to retrieve a book with ID {int}', (bookId) => {
     Books.getBookById(bookId).then((res) => {
       response = res;
     });
