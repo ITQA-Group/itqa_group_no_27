@@ -1,6 +1,6 @@
 import { Given, When, Then, And } from "cypress-cucumber-preprocessor/steps";
 import login from '../Login/login.cy';
-import Books from '../Books/books.cy';
+import Books from '../../Books/books.cy';
 
 let response;
 
