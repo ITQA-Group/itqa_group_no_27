@@ -26,8 +26,11 @@
     "step_definitions": "cypress/e2e/UI"
   },
   "devDependencies": {
+    "@badeball/cypress-cucumber-preprocessor": "^21.0.3",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.4",
     "@shelex/cypress-allure-plugin": "^2.40.2",
     "allure-cypress": "^3.0.7",
-    "cypress": "^13.17.0"
+    "cypress": "^13.17.0",
+    "esbuild": "^0.24.2"
   }
 }
