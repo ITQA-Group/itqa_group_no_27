@@ -26,5 +26,3 @@ Scenario: Adding a book with invalid data format
       | id  | title       | author        |
       | abc | 3  | WA silva  |
     Then the response status should be 400
-    
-    
