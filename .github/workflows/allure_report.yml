@@ -1,0 +1,141 @@
+name: Cypress Tests with Allure Report
+
+on:
+  workflow_dispatch:  # Trigger workflow manually using the 'Run workflow' button
+  pull_request:
+    branches:
+      - main  # Trigger on PR targeting the 'development' branch
+      - dev_cd       # Trigger on PR targeting the 'master' branch
+
+jobs:
+  run-ui-tests:
+    name: Run Cypress UI Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout The Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies for UI Tests
+        working-directory: ./UI-Testing
+        run: npm ci
+
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set JAVA_HOME Environment Variable
+        run: |
+          echo "JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))" >> $GITHUB_ENV
+          echo "JAVA_HOME is set to: $JAVA_HOME"
+
+      - name: Download and Extract Allure
+        run: |
+          wget https://github.com/allure-framework/allure2/releases/download/2.32.0/allure-2.32.0.tgz -O allure-2.32.0.tgz
+          tar -zxvf allure-2.32.0.tgz
+          sudo mv allure-2.32.0 /opt/allure
+          echo "/opt/allure/bin" >> $GITHUB_PATH
+
+      - name: Run Cypress UI Tests
+        working-directory: ./UI-Testing
+        run: npm run cy:run
+        continue-on-error: true
+
+      - name: Generate Allure Report
+        working-directory: ./UI-Testing
+        run: npm run allure:report
+
+      - name: Upload Allure UI Report as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: cypress-ui-test-report
+          path: ./UI-Testing/allure-report
+          expire-in: 3d  # Set expiration time for the artifact
+
+  run-api-tests:
+    name: Run Cypress API Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Create Server Directory
+        run: mkdir -p server
+
+      - name: Download JAR File from Cloud
+        run: |
+          wget --output-document=server/demo-0.0.1-SNAPSHOT.jar "https://firebasestorage.googleapis.com/v0/b/flashmart-c51b3.appspot.com/o/demo-0.0.1-SNAPSHOT.jar?alt=media&token=df7721d4-e5fd-416a-9a26-a550bf1d0a53"
+
+      - name: Set JAVA_HOME Environment Variable
+        run: |
+          echo "JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))" >> $GITHUB_ENV
+          echo "JAVA_HOME is set to: $JAVA_HOME"
+
+      - name: Download and Extract Allure
+        run: |
+          wget https://github.com/allure-framework/allure2/releases/download/2.32.0/allure-2.32.0.tgz -O allure-2.32.0.tgz
+          tar -zxvf allure-2.32.0.tgz
+          sudo mv allure-2.32.0 /opt/allure
+          echo "/opt/allure/bin" >> $GITHUB_PATH
+
+      - name: Start the JAR File
+        run: |
+          nohup java -jar server/demo-0.0.1-SNAPSHOT.jar > server.log 2>&1 &
+          echo "Waiting for the server to start..."
+          until curl --silent --head http://localhost:7081/api/books; do
+            echo "Server not ready yet. Retrying in 2 seconds..."
+            sleep 2
+          done
+          echo "Server is up and running."
+
+      - name: Upload Server Log for Debugging
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: server-log
+          path: server.log
+
+
+      - name: Install Node.js and Dependencies for API Tests
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies for API Tests
+        working-directory: ./API-Testing
+        run: npm ci
+
+      - name: Run Cypress API Tests
+        working-directory: ./API-Testing
+        run: npm run cy:run
+        continue-on-error: true
+
+      - name: Generate Allure Report
+        working-directory:  ./API-Testing
+        run: npm run allure:report
+
+      - name: Upload Playwright Allure Report as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: cypress-api-test-report
+          path: ./API-Testing/allure-report  # Download the whole report directory
+          expire-in: 14d  # Set expiration time for the artifact
+
+      - name: Stop the Server
+        run: |
+          pkill -f 'java -jar server/demo-0.0.1-SNAPSHOT.jar'
+          
+
