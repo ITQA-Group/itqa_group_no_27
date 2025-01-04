@@ -15,3 +15,8 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands'
+
+// Clear downloads folder before each test
+// beforeEach(() => {
+//       cy.task('deleteDownloadsFolder');
+//     });

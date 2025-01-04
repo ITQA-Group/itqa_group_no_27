@@ -45,6 +45,19 @@ When("The user send DELETE request following id {int}", (bookId) => {
   });
 });
 
+
+//attempting to delete a non-existent book
+When("The user attempts to delete a non-existing book with id {int}", (bookId) => {
+  return cy.request({
+    method: 'DELETE',
+    url: `${baseUrl}/api/books/${bookId}`,
+    failOnStatusCode: false
+  }).then((res) => {
+    response = res;
+  });
+});
+
+
 Then("The response status must be {int}", (statusCode) => {
   expect(response.status).to.eq(statusCode); // Ensure the response status is correct
 });

@@ -17,3 +17,12 @@ Feature: API Testing For Delete Book Operations
       | 9   | Test Book2   | Admin User2 |
     When The user send DELETE request following id 9
     Then The response status must be 200
+
+    Scenario: delete a book by user
+
+    Given The user authenticated as "user"
+    When The Post API request with fields
+      | id  | title       | author     |
+      | 19   | Test Book2   | Admin User2 |
+    When The user send DELETE request following id 19
+    Then The response status must be 403

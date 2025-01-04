@@ -5,6 +5,11 @@ const allureWriter = require('@shelex/cypress-allure-plugin/writer');
 module.exports = defineConfig({
   e2e: {
     specPattern: "**/*.feature",
+    experimentalSessionSupport: true,
+    downloadsFolder: 'cypress/downloads',
+    chromeWebSecurity: false,
+    viewportWidth: 1280,
+    viewportHeight: 720,
     setupNodeEvents(on, config) {
       on("file:preprocessor", cucumber());
       allureWriter(on, config);
