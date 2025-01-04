@@ -27,3 +27,7 @@ And('respone should include with id {int}', (bookId) => {
   expect(response.body).to.have.property('title'); 
   expect(response.body).to.have.property('author'); 
 });
+
+And('respone should include error message {string}', (expectedErrorMessage) => {
+  expect(response.body).to.eq(expectedErrorMessage);
+});
